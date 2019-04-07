@@ -16,6 +16,15 @@ c:\program files\crossmeta> fuse-nfs.exe -m nfs://10.138.0.5/home/user -m /mnt/n
 ```
 4. Now the NFS share is available from any Windows program as V:\mnt\nfsdir
 
+
+## NFSv4 support:
+NFSv4 is supported when used with a recent enough version of libnfs.To enable NFSv4 support you need to specify version=4 as an URL argument:
+```
+fuse-nfs.exe -n nfs://127.0.0.1/data/tmp?version=4 -m /my/mountpoint
+```
+
+
+
 ## Porting Notes 
 The project has two main components:
 * lib-nfs
