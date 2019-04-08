@@ -303,6 +303,8 @@ fuse_nfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		return ret;
 	}
 	wait_for_nfs_reply(nfs, &cb_data);
+	if (cb_data.status)
+		return cb_data.status;
 
 	nfsdir = cb_data.return_data;
 	while ((nfsdirent = nfs_readdir(nfs, nfsdir)) != NULL) {
