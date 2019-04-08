@@ -33,8 +33,11 @@ The project has two main components:
 The FUSE wrapper
 
 By using cross compile environment provided by Mingw32 on Linux it is very easy to port to Crossmeta Windows.
-1. Compile lib-nfs to produce libnfs.a (Just used setup.sh from fuse-nfs subdir)
+1. Compile libnfs to produce libnfs.a (Just used setup.sh from fuse-nfs subdir)
  ```
+ git clone  https://github.com/sahlberg/libnfs.git
+ git clone 
+ cd libnfs
  ../fuse-nfs/setup.sh
  ./configure  --host=i686-w64-mingw32 
  make
@@ -42,6 +45,14 @@ By using cross compile environment provided by Mingw32 on Linux it is very easy 
  2. The library archive will be in `lib/.libs/libnfs.a`. Copy it to the toplevel of libnfs subdir.
  ```
  cp lib/.libs/libnfs.a  .
+ ```
+ 3. Get the fuse-nfs module
+ ``` 
+ git clone https://github.com/crossmeta/fuse-nfs.git
+ git checkout crossmeta-fuse-nfs
+ cd  fuse
+ FUSE_DIR=/home/user/cxfuse make -f Makefile.mingw
+ 
  ```
  3. The fuse-nfs contains single source file and it is trivial to use our own Makefile than to get buried in automake tool chain. With this fuse-nfs/nfs/Makefile fuse-nfs.exe is built that can work with Crossmeta FUSE.
  
