@@ -1,0 +1,39 @@
+#
+# Makefile to build with CROSSMETA FUSE
+#
+TARGET = fuse-nfs.exe
+# Set the following variable to Crossmeta FUSE SDK directory
+#FUSE_DIR = cxfuse
+LIBNFS_DIR = ../../libnfs
+FUSE_LIBS = $(FUSE_DIR)/lib/w2k/free/i386
+LIBS =   -static -pthread -L../../libnfs -lnfs $(FUSE_LIBS)/libfuse.lib $(FUSE_LIBS)/cxfuse.dll   $(FUSE_LIBS)/libfs.lib $(FUSE_LIBS)/libgenm.lib -lntdll -lws2_32
+
+HOME=$(shell pwd)
+CC = i686-w64-mingw32-gcc
+CDEFINES = -DWIN32_LEAN_AND_MEAN -D_MSVCRT_ -D_POSIX -D_ALL_SOURCE -D _STAT_DEFINED -DNO_OLDNAMES -D_REENTRANT -D_INC_FCNTL  -D_INC_STDLIB -D_IO_H_  -D_POSIX_C_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE  -D _TIMEVAL_DEFINED -D_TIMESPEC_DEFINED -D_TIME_H -DHAVE_FUSE_H  -DBSD -D_POSIX_SOURCE
+CINCLUDES=-I $(FUSE_DIR)/include  -I $(FUSE_DIR) -I $(FUSE_DIR)/sys -I $(LIBNFS_DIR)/include
+CBUILDFLAGS = -O3 -fomit-frame-pointer -ffunction-sections -fdata-sections
+CFLAGS = -static -g -Wno-multichar $(CDEFINES) $(CINCLUDES)
+
+.PHONY: default all clean
+
+default: $(TARGET)
+all: default
+
+OBJECTS = fuse-nfs.o 
+HEADERS = $(wildcard *.h)
+
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.cc $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(TARGET): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $@ $(LIBS)
+
+clean:
+	-rm -f *.o
+	-rm -f $(TARGET)
+	
+
