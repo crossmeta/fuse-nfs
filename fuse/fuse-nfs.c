@@ -22,7 +22,6 @@
 
 #include "../config.h"
 
-#include <fuse.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,14 +34,17 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <nfsc/libnfs.h>
 
 #ifdef WIN32
 #include <winsock2.h>
 #include <win32/win32_compat.h>
 #endif
+#include <fuse.h>
 
 #ifndef FUSE_STAT
+#include <sys/stat.h>
 #define FUSE_STAT stat
 #endif
 
@@ -76,7 +78,7 @@ int fusenfs_allow_other_own_ids=0;
 int fuse_default_permissions=1;
 int fuse_multithreads=1;
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) && !defined(BSD)
 gid_t getgid(){
 	if( custom_gid == -1 )
 		return 65534;
@@ -240,7 +242,7 @@ fuse_nfs_getattr(const char *path, struct FUSE_STAT *stbuf)
 	stbuf->st_blksize      = st.nfs_blksize;
 	stbuf->st_blocks       = st.nfs_blocks;
 
-#if defined(HAVE_ST_ATIM) || defined(__MINGW32__)
+#if defined(HAVE_ST_ATIM) || (defined(__MINGW32__) && !defined(BSD))
 	stbuf->st_atim.tv_sec  = st.nfs_atime;
 	stbuf->st_atim.tv_nsec = st.nfs_atime_nsec;
 	stbuf->st_mtim.tv_sec  = st.nfs_mtime;
@@ -251,9 +253,15 @@ fuse_nfs_getattr(const char *path, struct FUSE_STAT *stbuf)
 	stbuf->st_atime      = st.nfs_atime;
 	stbuf->st_mtime      = st.nfs_mtime;
 	stbuf->st_ctime      = st.nfs_ctime;
+#if defined(BSD)
+	stbuf->st_atimensec = st.nfs_atime_nsec;
+	stbuf->st_mtimensec = st.nfs_mtime_nsec;
+	stbuf->st_ctimensec = st.nfs_ctime_nsec;
+#else
 	stbuf->st_atime_nsec = st.nfs_atime_nsec;
 	stbuf->st_mtime_nsec = st.nfs_mtime_nsec;
 	stbuf->st_ctime_nsec = st.nfs_ctime_nsec;
+#endif
 #endif
 	return cb_data.status;
 }
