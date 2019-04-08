@@ -50,6 +50,7 @@ By using cross compile environment provided by Mingw32 on Linux it is very easy 
  ``` 
  git clone https://github.com/crossmeta/fuse-nfs.git
  git checkout crossmeta-fuse-nfs
+ ./configure  --host=i686-w64-mingw32
  cd  fuse
  FUSE_DIR=/home/user/cxfuse make -f Makefile.mingw
  
