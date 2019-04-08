@@ -31,8 +31,8 @@ AC_SUBST(WARN_CFLAGS)
 AC_CONFIG_HEADER(config.h)
 
 AC_HEADER_ASSERT
-AC_CHECK_HEADER([fuse.h], [], [AC_MSG_ERROR([fuse.h is missing. You need to install libfuse-dev])], [])
-AC_CHECK_HEADER([nfsc/libnfs.h], [], [AC_MSG_ERROR([libnfs.h is missing. You need to install libnfs-dev])], [])
+AC_CHECK_HEADER([fuse.h], [], [AC_MSG_WARN([fuse.h is missing. You need to install libfuse-dev])], [])
+AC_CHECK_HEADER([nfsc/libnfs.h], [], [AC_MSG_WARN([libnfs.h is missing. You need to install libnfs-dev])], [])
 
 AC_CHECK_HEADERS([fuse.h])
 
@@ -48,7 +48,7 @@ if test x"$libiscsi_cv_HAVE_ST_ATIM" = x"yes"; then
 fi
 
 AC_SEARCH_LIBS([fuse_get_context], [fuse dokanfuse1.dll dokanfuse2.dll], [], [
-  AC_MSG_ERROR([fuse library unavailable])
+  AC_MSG_WARN([fuse library unavailable])
 ])
 
 AC_CHECK_FUNC(gethostbyname,[SOCKETS_AVAILABLE=1])
